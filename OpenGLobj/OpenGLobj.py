@@ -20,13 +20,13 @@ class Cube:
 class OpenGLobj:
 
     #########################################################################
-    def __init__(self, obj_path, texture_path):
+    def __init__(self, obj_path, texture_path, width, height):
         # init OpenGL
         glClearColor(1, 1, 1, 1)
         glEnable(GL_BLEND)
         glEnable(GL_DEPTH_TEST)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        self.shader = self.createShader("./OpenGLobj/shaders/vertex.txt", "./OpenGLobj/shaders/fragment.txt")
+        self.shader = self.create_shader("./OpenGLobj/shaders/vertex.txt", "./OpenGLobj/shaders/fragment.txt")
         glUseProgram(self.shader)
         glUniform1i(glGetUniformLocation(self.shader, "image.texture"), 0)
         self.cube = Cube(
@@ -39,7 +39,7 @@ class OpenGLobj:
         self.metal_texture = Material(texture_path)
 
         projection_transform = pyrr.matrix44.create_perspective_projection(
-            fovy=45, aspect=640/480,
+            fovy=45, aspect=width/height,
             near=0.1, far=10, dtype=np.float32
         )
 
@@ -49,14 +49,14 @@ class OpenGLobj:
         )
         self.modelMatrixLocation = glGetUniformLocation(self.shader, "model")
 
-        self.mainloop()
+        self.render()
 
     #########################################################################
-    def createShader(self, vertexFilepath, fragmentFilepath):
-        with open(vertexFilepath, 'r') as f:
+    def create_shader(self, vertex_filepath, fragment_filepath):
+        with open(vertex_filepath, 'r') as f:
             vertex_src = f.readlines()
 
-        with open(fragmentFilepath, 'r') as f:
+        with open(fragment_filepath, 'r') as f:
             fragment_src = f.readlines()
 
         shader = compileProgram(
@@ -67,7 +67,7 @@ class OpenGLobj:
         return shader
 
     #########################################################################
-    def mainloop(self):
+    def render(self):
         if self.cube.eulers[2] > 360:
             self.cube.eulers[2] -= 360
 
@@ -110,7 +110,7 @@ class Mesh:
     #########################################################################
     def __init__(self, filename):
         # xyz
-        vertices = self.loadMesh(filename)
+        vertices = self.load_mesh(filename)
         self.vertex_count = len(vertices) // 8
         vertices = np.array(vertices, dtype=np.float32)
 
@@ -129,7 +129,7 @@ class Mesh:
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
 
     #########################################################################
-    def loadMesh(self, filename) -> list[float]:
+    def load_mesh(self, filename) -> list[float]:
         v = []
         vt = []
         vn = []
@@ -166,9 +166,9 @@ class Mesh:
                         vt: list[list[float]],
                         vn: list[list[float]],
                         vertices: list[float]) -> None:
-        triangleCount = len(words) - 3
+        triangle_count = len(words) - 3
 
-        for i in range(triangleCount):
+        for i in range(triangle_count):
             self.make_corner(words[1], v, vt, vn, vertices)
             self.make_corner(words[2 + i], v, vt, vn, vertices)
             self.make_corner(words[3 + i], v, vt, vn, vertices)

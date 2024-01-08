@@ -22,9 +22,9 @@ class TkinterOpenGLrender(OpenGLFrame):
         self.B3x1 = None
 
     def initgl(self):
-        GL.glLoadIdentity()
-        GLU.gluPerspective(45, (self.width / self.height), 0.1, 50.0)
-        GL.glTranslatef(0.0, 0.0, -5)
+        #GL.glLoadIdentity()
+        #GLU.gluPerspective(45, (self.width / self.height), 0.1, 50.0)
+        #GL.glTranslatef(0.0, 0.0, -5)
 
         # Mouse
         self.bind('<Button-1>', self.MouseB1Click)
@@ -39,14 +39,12 @@ class TkinterOpenGLrender(OpenGLFrame):
         self.bind('<Button-4>', self.MouseB4)
         self.bind('<Button-5>', self.MouseB5)
 
-        self.oglobj = oGLobj.OpenGLobj(self.obj_path, self.texture_path)
+        self.oglobj = oGLobj.OpenGLobj(self.obj_path, self.texture_path, self.width, self.height)
 
     def redraw(self):
         pass
-        #GL.glRotatef(1, 3, 1, 1)
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-        self.oglobj.mainloop()
-        #Cube()
+        #GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+        self.oglobj.render()
 
     ##############################################################
     def MouseB1Click(self, event):
@@ -68,9 +66,7 @@ class TkinterOpenGLrender(OpenGLFrame):
 
     ##############################################################
     def MouseB2Move(self, event):
-        # self._angle_y += -(event.x - self.B3x1) / 50
         self.oglobj.cube.eulers[1] += -(event.x - self.B2x1) / 10
-        # self._angle_x += (event.y - self.B3y1) / 50
         self.oglobj.cube.eulers[1] -= (event.y - self.B2y1) / 10
 
         self.B2x1 = event.x
@@ -83,9 +79,7 @@ class TkinterOpenGLrender(OpenGLFrame):
 
     ##############################################################
     def MouseB3Move(self, event):
-        # self._angle_y += -(event.x - self.B3x1) / 50
         self.oglobj.cube.eulers[2] += -(event.x - self.B3x1) / 10
-        # self._angle_x += (event.y - self.B3y1) / 50
         self.oglobj.cube.eulers[0] -= (event.y - self.B3y1) / 10
 
         self.B3x1 = event.x
