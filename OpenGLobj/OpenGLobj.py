@@ -20,7 +20,7 @@ class Cube:
 class OpenGLobj:
 
     #########################################################################
-    def __init__(self, filepath):
+    def __init__(self, obj_path, texture_path):
         # init OpenGL
         glClearColor(1, 1, 1, 1)
         glEnable(GL_BLEND)
@@ -34,9 +34,9 @@ class OpenGLobj:
             eulers=[0, 0, 0]
         )
 
-        self.mesh = Mesh(filepath)
+        self.mesh = Mesh(obj_path)
 
-        self.metal_texture = Material("./OpenGLobj/textures/metal.jpeg")
+        self.metal_texture = Material(texture_path)
 
         projection_transform = pyrr.matrix44.create_perspective_projection(
             fovy=45, aspect=640/480,
