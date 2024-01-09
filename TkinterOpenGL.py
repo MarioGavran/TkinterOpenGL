@@ -4,7 +4,7 @@ from OpenGL import GLU
 from OpenGLobj import OpenGLobj as oGLobj
 
 
-class TkinterOpenGLrender(OpenGLFrame):
+class TkinterOpenGL(OpenGLFrame):
     def __init__(self, master, obj_path, texture_path, width, height):
         super().__init__(master=master, width=width, height=height)
 

@@ -17,6 +17,16 @@ class Cube:
 
 #########################################################################
 #########################################################################
+class Light:
+
+    def __init__(self, position, color, strength):
+        self.position = np.array(position, dtype=np.float32)
+        self.color = np.array(color, dtype=np.float32)
+        self.strength = strength
+
+
+#########################################################################
+#########################################################################
 class OpenGLobj:
 
     #########################################################################
@@ -34,6 +44,12 @@ class OpenGLobj:
             eulers=[0, 0, 0]
         )
 
+        self.lights = Light(
+            position=[4, 0, 2],
+            color=[1, 1, 1],
+            strength=5
+        )
+
         self.mesh = Mesh(obj_path)
 
         self.metal_texture = Material(texture_path)
@@ -48,6 +64,13 @@ class OpenGLobj:
             1, GL_FALSE, projection_transform
         )
         self.modelMatrixLocation = glGetUniformLocation(self.shader, "model")
+
+        self.lightLocation = {
+            "position": glGetUniformLocation(self.shader, "Light.position"),
+            "color": glGetUniformLocation(self.shader, "Light.color"),
+            "strength": glGetUniformLocation(self.shader, "Light.strength")
+        }
+        self.cameraPosLoc = glGetUniformLocation(self.shader, "cameraPosition")
 
         self.render()
 
@@ -73,9 +96,13 @@ class OpenGLobj:
 
         # refresh screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
         glUseProgram(self.shader)
         self.metal_texture.use()
+
+        glUniform3fv(self.lightLocation["position"], 1, self.lights.position)
+        glUniform3fv(self.lightLocation["color"], 1, self.lights.color)
+        glUniform1f(self.lightLocation["strength"], self.lights.strength)
+        glUniform3fv(self.cameraPosLoc, 1, [0, 0, 0])
 
         model_transform = pyrr.matrix44.create_identity(dtype=np.float32)
         model_transform = pyrr.matrix44.multiply(
@@ -127,6 +154,9 @@ class Mesh:
         # Texture
         glEnableVertexAttribArray(1)  # color
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
+        # Normal
+        glEnableVertexAttribArray(2)  # color
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(20))
 
     #########################################################################
     def load_mesh(self, filename) -> list[float]:

@@ -1,14 +1,14 @@
 import tkinter
-import TkinterOpenGL as TOGLR
+from TkinterOpenGL import  TkinterOpenGL
 
 
 def main():
     root = tkinter.Tk()
 
-    render_frame = TOGLR.TkinterOpenGLrender(root,
-                                     "./OpenGLobj/obj/monkey.obj",
-                                     "./OpenGLobj/textures/gold.png",
-                                     height=480, width=640)
+    render_frame = TkinterOpenGL(root,
+                                 "./OpenGLobj/obj/monkey.obj",
+                                 "./OpenGLobj/textures/gold.png",
+                                 height=480, width=640)
     render_frame.animate = 10
     render_frame.grid(row=0, column=0)
 

@@ -9,6 +9,7 @@
 - Put your .obj model in [/OpenGLobj/obj](/OpenGLobj/obj)
 - Put your texture image in [/OpenGLobj/textures](/OpenGLobj/textures)
 - simple example with the render frame and two dummy buttons:
+
 ```python
 import tkinter
 import TkinterOpenGL as TOGLR
@@ -17,10 +18,10 @@ import TkinterOpenGL as TOGLR
 def main():
     root = tkinter.Tk()
 
-    render_frame = TOGLR.TkinterOpenGLrender(root,
-                                     "./OpenGLobj/obj/monkey.obj",
-                                     "./OpenGLobj/textures/gold.png",
-                                     height=600, width=800)
+    render_frame = TOGLR.TkinterOpenGL(root,
+                                       "./OpenGLobj/obj/monkey.obj",
+                                       "./OpenGLobj/textures/gold.png",
+                                       height=600, width=800)
     render_frame.animate = 10
     render_frame.grid(row=0, column=0)
 
