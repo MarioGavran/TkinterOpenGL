@@ -10,9 +10,44 @@ from PIL import Image
 #########################################################################
 class Cube:
 
-    def __init__(self, position, eulers):
+    def __init__(self, position, eulers, obj_path, texture_path):
         self.position = np.array(position, dtype=np.float32)
         self.eulers = np.array(eulers, dtype=np.float32)
+        self.mesh = Mesh(obj_path)
+        self.material_texture = Material(texture_path)
+
+
+#########################################################################
+#########################################################################
+class Scene:
+
+    def __init__(self, obj_path, texture_path):
+        self.cubes = [
+            Cube(
+                position=[-1.5, 0, -5],
+                eulers=[0, 0, 0],
+                obj_path=obj_path,
+                texture_path=texture_path
+            ),
+            Cube(
+                position=[1.5, 0, -5],
+                eulers=[0, 0, 0],
+                obj_path=obj_path,
+                texture_path=texture_path
+            ),
+        ]
+
+        self.lights = Light(
+            position=[4, 0, 2],
+            color=[1, 1, 1],
+            strength=5
+        )
+
+
+    def update(self):
+        for cube in self.cubes:
+            if cube.eulers[2] > 360:
+                cube.eulers[2] -= 360
 
 
 #########################################################################
@@ -28,7 +63,6 @@ class Light:
 #########################################################################
 #########################################################################
 class OpenGLobj:
-
     #########################################################################
     def __init__(self, obj_path, texture_path, width, height):
         # init OpenGL
@@ -39,20 +73,22 @@ class OpenGLobj:
         self.shader = self.create_shader("./OpenGLobj/shaders/vertex.txt", "./OpenGLobj/shaders/fragment.txt")
         glUseProgram(self.shader)
         glUniform1i(glGetUniformLocation(self.shader, "image.texture"), 0)
-        self.cube = Cube(
-            position=[0, 0, -3],
-            eulers=[0, 0, 0]
-        )
 
-        self.lights = Light(
-            position=[4, 0, 2],
-            color=[1, 1, 1],
-            strength=5
-        )
+        self.scene = Scene(obj_path, texture_path)
+        # self.cube = Cube(
+        #    position=[-1.5, 0, -5],
+        #    eulers=[0, 0, 0]
+        # )
 
-        self.mesh = Mesh(obj_path)
+        # self.lights = Light(
+        #    position=[4, 0, 2],
+        #    color=[1, 1, 1],
+        #    strength=5
+        # )
 
-        self.metal_texture = Material(texture_path)
+        # self.mesh = Mesh(obj_path)
+
+        # self.material_texture = Material(texture_path)
 
         projection_transform = pyrr.matrix44.create_perspective_projection(
             fovy=45, aspect=width/height,
@@ -91,42 +127,45 @@ class OpenGLobj:
 
     #########################################################################
     def render(self):
-        if self.cube.eulers[2] > 360:
-            self.cube.eulers[2] -= 360
-
+        # if self.cube.eulers[2] > 360:
+        #    self.cube.eulers[2] -= 360
+        self.scene.update()
         # refresh screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glUseProgram(self.shader)
-        self.metal_texture.use()
+        # self.material_texture.use()
 
-        glUniform3fv(self.lightLocation["position"], 1, self.lights.position)
-        glUniform3fv(self.lightLocation["color"], 1, self.lights.color)
-        glUniform1f(self.lightLocation["strength"], self.lights.strength)
+        glUniform3fv(self.lightLocation["position"], 1, self.scene.lights.position)
+        glUniform3fv(self.lightLocation["color"], 1, self.scene.lights.color)
+        glUniform1f(self.lightLocation["strength"], self.scene.lights.strength)
         glUniform3fv(self.cameraPosLoc, 1, [0, 0, 0])
 
-        model_transform = pyrr.matrix44.create_identity(dtype=np.float32)
-        model_transform = pyrr.matrix44.multiply(
-            m1=model_transform,
-            m2=pyrr.matrix44.create_from_eulers(
-                eulers=np.radians(self.cube.eulers),
-                dtype=np.float32
+        for i, cube in enumerate(self.scene.cubes):
+            model_transform = pyrr.matrix44.create_identity(dtype=np.float32)
+            model_transform = pyrr.matrix44.multiply(
+                m1=model_transform,
+                m2=pyrr.matrix44.create_from_eulers(
+                    eulers=np.radians(cube.eulers),
+                    dtype=np.float32
+                )
             )
-        )
-        model_transform = pyrr.matrix44.multiply(
-            m1=model_transform,
-            m2=pyrr.matrix44.create_from_translation(
-                vec=self.cube.position,
-                dtype=np.float32
+            model_transform = pyrr.matrix44.multiply(
+                m1=model_transform,
+                m2=pyrr.matrix44.create_from_translation(
+                    vec=cube.position,
+                    dtype=np.float32
+                )
             )
-        )
-        glUniformMatrix4fv(self.modelMatrixLocation, 1, GL_FALSE, model_transform)
-        glBindVertexArray(self.mesh.vao)
-        glDrawArrays(GL_TRIANGLES, 0, self.mesh.vertex_count)
+            glUniformMatrix4fv(self.modelMatrixLocation, 1, GL_FALSE, model_transform)
+            cube.material_texture.use()
+            glBindVertexArray(cube.mesh.vao)
+            glDrawArrays(GL_TRIANGLES, 0, cube.mesh.vertex_count)
 
     #########################################################################
     def quit(self):
-        self.mesh.destroy()
-        self.metal_texture.destroy()
+        for cube in self.scene.cubes:
+            cube.mesh.destroy()
+            cube.material_texture.destroy()
         glDeleteProgram(self.shader)
 
 
@@ -155,7 +194,7 @@ class Mesh:
         glEnableVertexAttribArray(1)  # color
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
         # Normal
-        glEnableVertexAttribArray(2)  # color
+        glEnableVertexAttribArray(2)  # color todo:
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(20))
 
     #########################################################################
@@ -250,4 +289,6 @@ class Material:
     #########################################################################
     def destroy(self):
         glDeleteTextures(1, (self.texture,))
+
+
 

@@ -28,21 +28,21 @@ class TkinterOpenGL(OpenGLFrame):
 
         # Mouse
         self.bind('<Button-1>', self.MouseB1Click)
-        self.bind('<B1-Motion>', self.MouseB1Move)
+        #self.bind('<B1-Motion>', self.MouseB1Move)
 
-        self.bind('<Button-2>', self.MouseB2Click)
-        self.bind('<B2-Motion>', self.MouseB2Move)
+        #self.bind('<Button-2>', self.MouseB2Click)
+        #self.bind('<B2-Motion>', self.MouseB2Move)
 
-        self.bind('<Button-3>', self.MouseB3Click)
-        self.bind('<B3-Motion>', self.MouseB3Move)
+        #self.bind('<Button-3>', self.MouseB3Click)
+        #self.bind('<B3-Motion>', self.MouseB3Move)
 
-        self.bind('<Button-4>', self.MouseB4)
-        self.bind('<Button-5>', self.MouseB5)
+        #self.bind('<Button-4>', self.MouseB4)
+        #self.bind('<Button-5>', self.MouseB5)
 
         self.oglobj = oGLobj.OpenGLobj(self.obj_path, self.texture_path, self.width, self.height)
 
     def redraw(self):
-        pass
+        #pass
         #GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         self.oglobj.render()
 
@@ -50,6 +50,9 @@ class TkinterOpenGL(OpenGLFrame):
     def MouseB1Click(self, event):
         self.B1x1 = event.x
         self.B1y1 = event.y
+        print(event.x, event.y)
+        #data = GL.glReadPixels(event.x, self.height - event.y, 1, 1, GL.GL_RGB, GL.GL_FLOAT)
+        #print(data)
 
     ##############################################################
     def MouseB1Move(self, event):

@@ -1,5 +1,5 @@
 import tkinter
-from TkinterOpenGL import  TkinterOpenGL
+from TkinterOpenGL import TkinterOpenGL
 
 
 def main():
