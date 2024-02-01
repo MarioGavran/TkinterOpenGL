@@ -3,7 +3,7 @@ from OpenGLobj import OpenGLobj as oGLobj
 
 
 class TkinterOpenGL(OpenGLFrame):
-    def __init__(self, master, *args, width, height):
+    def __init__(self, master, /, *args, width, height):
         super().__init__(master=master, width=width, height=height)
 
         self.paths = args
