@@ -28,16 +28,16 @@ class TkinterOpenGL(OpenGLFrame):
 
         # Mouse
         self.bind('<Button-1>', self.MouseB1Click)
-        #self.bind('<B1-Motion>', self.MouseB1Move)
+        self.bind('<B1-Motion>', self.MouseB1Move)
 
-        #self.bind('<Button-2>', self.MouseB2Click)
-        #self.bind('<B2-Motion>', self.MouseB2Move)
+        self.bind('<Button-2>', self.MouseB2Click)
+        self.bind('<B2-Motion>', self.MouseB2Move)
 
-        #self.bind('<Button-3>', self.MouseB3Click)
-        #self.bind('<B3-Motion>', self.MouseB3Move)
+        self.bind('<Button-3>', self.MouseB3Click)
+        self.bind('<B3-Motion>', self.MouseB3Move)
 
-        #self.bind('<Button-4>', self.MouseB4)
-        #self.bind('<Button-5>', self.MouseB5)
+        self.bind('<Button-4>', self.MouseB4)
+        self.bind('<Button-5>', self.MouseB5)
 
         self.oglobj = oGLobj.OpenGLobj(self.obj_path, self.texture_path, self.width, self.height)
 
@@ -48,51 +48,100 @@ class TkinterOpenGL(OpenGLFrame):
 
     ##############################################################
     def MouseB1Click(self, event):
+        self.oglobj.clicked = True
+
         self.B1x1 = event.x
         self.B1y1 = event.y
-        print(event.x, event.y)
-        #data = GL.glReadPixels(event.x, self.height - event.y, 1, 1, GL.GL_RGB, GL.GL_FLOAT)
-        #print(data)
+
+        self.oglobj.mouse_x = event.x
+        self.oglobj.mouse_y = self.height - event.y
+
+        self.oglobj.render()
 
     ##############################################################
     def MouseB1Move(self, event):
-        self.oglobj.cube.position[0] += (event.x - self.B1x1) / 300
-        self.oglobj.cube.position[1] -= (event.y - self.B1y1) / 300
+        if self.oglobj.clicked_object_id > len(self.oglobj.scene.cubes):
+            return
+
+        self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].position[0] += (event.x - self.B1x1) / 300
+        self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].position[1] -= (event.y - self.B1y1) / 300
 
         self.B1x1 = event.x
         self.B1y1 = event.y
 
     ##############################################################
     def MouseB2Click(self, event):
+        self.oglobj.clicked = True
+
         self.B2x1 = event.x
         self.B2y1 = event.y
 
+        self.oglobj.mouse_x = event.x
+        self.oglobj.mouse_y = self.height - event.y
+
+        self.oglobj.render()
+
     ##############################################################
     def MouseB2Move(self, event):
-        self.oglobj.cube.eulers[1] += -(event.x - self.B2x1) / 10
-        self.oglobj.cube.eulers[1] -= (event.y - self.B2y1) / 10
+        if self.oglobj.clicked_object_id > len(self.oglobj.scene.cubes):
+            return
+
+        self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].eulers[1] += -(event.x - self.B2x1) / 10
+        self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].eulers[1] -= (event.y - self.B2y1) / 10
 
         self.B2x1 = event.x
         self.B2y1 = event.y
 
     ##############################################################
     def MouseB3Click(self, event):
+        self.oglobj.clicked = True
+
         self.B3x1 = event.x
         self.B3y1 = event.y
 
+        self.oglobj.mouse_x = event.x
+        self.oglobj.mouse_y = self.height - event.y
+
+        self.oglobj.render()
+
     ##############################################################
     def MouseB3Move(self, event):
-        self.oglobj.cube.eulers[2] += -(event.x - self.B3x1) / 10
-        self.oglobj.cube.eulers[0] -= (event.y - self.B3y1) / 10
+        if self.oglobj.clicked_object_id > len(self.oglobj.scene.cubes):
+            return
+
+        self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].eulers[2] += -(event.x - self.B3x1) / 10
+        self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].eulers[0] -= (event.y - self.B3y1) / 10
 
         self.B3x1 = event.x
         self.B3y1 = event.y
 
     ##############################################################
     def MouseB4(self, event):
-        self.oglobj.cube.position[2] += 1 / 10
+        self.oglobj.clicked = True
+        self.oglobj.mouse_x = event.x
+        self.oglobj.mouse_y = self.height - event.y
+
+        self.oglobj.render()
+
+        if self.oglobj.clicked_object_id is None or self.oglobj.clicked_object_id > len(self.oglobj.scene.cubes):
+            for cube in self.oglobj.scene.cubes:
+                cube.position[2] += 1 / 10
+            return
+
+        self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].position[2] += 1 / 10
 
     ###############################################################
     def MouseB5(self, event):
-        self.oglobj.cube.position[2] -= 1 / 10
+        self.oglobj.clicked = True
+        self.oglobj.mouse_x = event.x
+        self.oglobj.mouse_y = self.height - event.y
+
+        self.oglobj.render()
+
+        if self.oglobj.clicked_object_id is None or self.oglobj.clicked_object_id > len(self.oglobj.scene.cubes):
+            for cube in self.oglobj.scene.cubes:
+                cube.position[2] -= 1 / 10
+            return
+
+        self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].position[2] -= 1 / 10
 
