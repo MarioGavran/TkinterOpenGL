@@ -1,15 +1,12 @@
 from pyopengltk import OpenGLFrame
-from OpenGL import GL
-from OpenGL import GLU
 from OpenGLobj import OpenGLobj as oGLobj
 
 
 class TkinterOpenGL(OpenGLFrame):
-    def __init__(self, master, obj_path, texture_path, width, height):
+    def __init__(self, master, *args, width, height):
         super().__init__(master=master, width=width, height=height)
 
-        self.obj_path = obj_path
-        self.texture_path = texture_path
+        self.paths = args
 
         self.oglobj = None
 
@@ -22,10 +19,6 @@ class TkinterOpenGL(OpenGLFrame):
         self.B3x1 = None
 
     def initgl(self):
-        #GL.glLoadIdentity()
-        #GLU.gluPerspective(45, (self.width / self.height), 0.1, 50.0)
-        #GL.glTranslatef(0.0, 0.0, -5)
-
         # Mouse
         self.bind('<Button-1>', self.MouseB1Click)
         self.bind('<B1-Motion>', self.MouseB1Move)
@@ -39,11 +32,9 @@ class TkinterOpenGL(OpenGLFrame):
         self.bind('<Button-4>', self.MouseB4)
         self.bind('<Button-5>', self.MouseB5)
 
-        self.oglobj = oGLobj.OpenGLobj(self.obj_path, self.texture_path, self.width, self.height)
+        self.oglobj = oGLobj.OpenGLobj(*self.paths, width=self.width, height=self.height)
 
     def redraw(self):
-        #pass
-        #GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         self.oglobj.render()
 
     ##############################################################
@@ -60,7 +51,12 @@ class TkinterOpenGL(OpenGLFrame):
 
     ##############################################################
     def MouseB1Move(self, event):
-        if self.oglobj.clicked_object_id > len(self.oglobj.scene.cubes):
+        if self.oglobj.clicked_object_id is None or self.oglobj.clicked_object_id > len(self.oglobj.scene.cubes):
+            for cube in self.oglobj.scene.cubes:
+                cube.position[0] += (event.x - self.B1x1) / 300
+                cube.position[1] -= (event.y - self.B1y1) / 300
+            self.B1x1 = event.x
+            self.B1y1 = event.y
             return
 
         self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].position[0] += (event.x - self.B1x1) / 300
@@ -144,4 +140,3 @@ class TkinterOpenGL(OpenGLFrame):
             return
 
         self.oglobj.scene.cubes[self.oglobj.clicked_object_id - 1].position[2] -= 1 / 10
-

@@ -8,6 +8,8 @@ def main():
     render_frame = TkinterOpenGL(root,
                                  "./OpenGLobj/obj/monkey.obj",
                                  "./OpenGLobj/textures/gold.png",
+                                 "./OpenGLobj/obj/monkey.obj",
+                                 "./OpenGLobj/textures/gold.png",
                                  height=480, width=640)
     render_frame.animate = 10
     render_frame.grid(row=0, column=0)

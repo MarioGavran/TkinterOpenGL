@@ -21,11 +21,8 @@ vec3 calculatePointLight(PointLight light, vec3 fragmentPosition, vec3 fragmentN
 void main()
 {
     vec3 temp = vec3(0.0);
-
     temp += calculatePointLight(Light, fragmentPosition, fragmentNormal);
-
     color = vec4(temp, 1.0);
-    //color = texture(imageTexture, fragmentTexCoord);
 }
 
 vec3 calculatePointLight(PointLight light, vec3 fragmentPosition, vec3 fragmentNormal)

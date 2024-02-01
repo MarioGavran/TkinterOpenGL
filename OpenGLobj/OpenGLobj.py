@@ -10,6 +10,7 @@ from PIL import Image
 #########################################################################
 class Cube:
 
+    #########################################################################
     def __init__(self, position, eulers, obj_path, texture_path, cube_id):
         self.cube_id = cube_id
         self.position = np.array(position, dtype=np.float32)
@@ -22,23 +23,21 @@ class Cube:
 #########################################################################
 class Scene:
 
-    def __init__(self, obj_path, texture_path):
-        self.cubes = [
-            Cube(
-                position=[-1.5, 0, -5],
+    #########################################################################
+    def __init__(self, *args):
+        self.cubes = []
+        i = 0
+        j = 0
+        while i < len(args):
+            self.cubes.append(Cube(
+                position=[-1+i, 0, -5],
                 eulers=[0, 0, 0],
-                obj_path=obj_path,
-                texture_path=texture_path,
-                cube_id=1
-            ),
-            Cube(
-                position=[1.5, 0, -5],
-                eulers=[0, 0, 0],
-                obj_path=obj_path,
-                texture_path=texture_path,
-                cube_id=2
-            ),
-        ]
+                obj_path=args[i],
+                texture_path=args[i+1],
+                cube_id=j+1
+            ))
+            i += 2
+            j += 1
 
         self.lights = Light(
             position=[4, 0, 2],
@@ -46,6 +45,7 @@ class Scene:
             strength=5
         )
 
+    #########################################################################
     def update(self):
         for cube in self.cubes:
             if cube.eulers[2] > 360:
@@ -56,6 +56,7 @@ class Scene:
 #########################################################################
 class Light:
 
+    #########################################################################
     def __init__(self, position, color, strength):
         self.position = np.array(position, dtype=np.float32)
         self.color = np.array(color, dtype=np.float32)
@@ -65,8 +66,9 @@ class Light:
 #########################################################################
 #########################################################################
 class OpenGLobj:
+
     #########################################################################
-    def __init__(self, obj_path, texture_path, width, height):
+    def __init__(self, *args, width, height):
         self.clicked = False
         self.mouse_x = None
         self.mouse_y = None
@@ -83,8 +85,8 @@ class OpenGLobj:
             near=0.1, far=10, dtype=np.float32
         )
 
-        # set all pickingShader variables
-        self.pickingShader = self.create_shader("./OpenGLobj/shaders/vertex1.txt", "./OpenGLobj/shaders/fragment1.txt")
+        # set all picking Shader variables
+        self.pickingShader = self.create_shader("./OpenGLobj/shaders/picking_vertex.txt", "./OpenGLobj/shaders/picking_fragment.txt")
         glUseProgram(self.pickingShader)
         self.codeVarLocation = glGetUniformLocation(self.pickingShader, "code")
         glBindFragDataLocation(self.pickingShader, 0, "outputF")
@@ -105,7 +107,7 @@ class OpenGLobj:
         }
         self.cameraPosLoc = glGetUniformLocation(self.shader, "cameraPosition")
 
-        self.scene = Scene(obj_path, texture_path)
+        self.scene = Scene(*args)
         self.render()
 
     #########################################################################
@@ -197,13 +199,13 @@ class Mesh:
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
         glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
         # Position
-        glEnableVertexAttribArray(0)    # position
+        glEnableVertexAttribArray(0)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
         # Texture
-        glEnableVertexAttribArray(1)  # color
+        glEnableVertexAttribArray(1)
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
         # Normal
-        glEnableVertexAttribArray(2)  # color
+        glEnableVertexAttribArray(2)
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(20))
 
     #########################################################################
