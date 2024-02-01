@@ -6,8 +6,8 @@
 - Andrew's GetIntoGameDev - Youtube tutorial: [OpenGL with Python](https://youtu.be/LCK1qdp_HhQ?list=PLn3eTxaOtL2PDnEVNwOgZFm5xYPr4dUoR)
 
 ### Basic usage:
-- Put your .obj model in [/OpenGLobj/obj](/OpenGLobj/obj)
-- Put your texture image in [/OpenGLobj/textures](/OpenGLobj/textures)
+- Place your .obj model in [/OpenGLobj/obj](/OpenGLobj/obj)
+- Place your texture image in [/OpenGLobj/textures](/OpenGLobj/textures)
 - simple example with the render frame and two dummy buttons:
 
 ```python
