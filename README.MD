@@ -56,7 +56,7 @@ if __name__ == "__main__":
 - Scroll up and down while over an object to move it in Z direction 
 - Scroll up and down while over empty space to move all objects in Z direction (Zoom)
 - Click scroll on object to rotate it around Z-axis
-- 
+
 ### Requirements
 - pyopengltk (slightly modified)
 - PyOpenGL
