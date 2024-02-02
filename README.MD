@@ -58,7 +58,7 @@ if __name__ == "__main__":
 - Click scroll on object to rotate it around Z-axis
 
 ### Requirements
-- pyopengltk (slightly modified)
+- pyopengltk
 - PyOpenGL
 - tkinter
 - ctypes
