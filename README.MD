@@ -9,6 +9,11 @@
 - Andrew from GetIntoGameDev and Khronos forum for help and support
 
 ### Basic usage:
+- use this to get last version:
+```
+git clone --depth=1 https://github.com/MarioGavran/TkinterOpenGL.git
+```
+- Install requirements listed at the bottom of this file.
 - Place your .obj model in [/TkinterOpenGL/OpenGLobj/obj](/obj)
 - Place your texture image in [/TkinterOpenGL/OpenGLobj/textures](/textures)
 - Here is a simple example with the render frame and two dummy buttons below.
