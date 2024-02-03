@@ -9,8 +9,8 @@
 - Andrew from GetIntoGameDev and Khronos forum for help and support
 
 ### Basic usage:
-- Place your .obj model in [/OpenGLobj/obj](/OpenGLobj/obj)
-- Place your texture image in [/OpenGLobj/textures](/OpenGLobj/textures)
+- Place your .obj model in [/TkinterOpenGL/OpenGLobj/obj](/obj)
+- Place your texture image in [/TkinterOpenGL/OpenGLobj/textures](/textures)
 - Here is a simple example with the render frame and two dummy buttons below.
 
 ### Note the "TkinterOpenGL()" call: 
@@ -20,17 +20,17 @@
 
 ```python
 import tkinter
-from TkinterOpenGL import TkinterOpenGL
+from TkinterOpenGL.TkinterOpenGL import TkinterOpenGL
 
 
 def main():
     root = tkinter.Tk()
 
     render_frame = TkinterOpenGL(root,
-                                 "./OpenGLobj/obj/monkey.obj",
-                                 "./OpenGLobj/textures/gold.png",
-                                 "./OpenGLobj/obj/monkey.obj",
-                                 "./OpenGLobj/textures/gold.png",
+                                 "../obj/monkey.obj",
+                                 "../textures/gold.png",
+                                 "../obj/monkey.obj",
+                                 "../textures/gold.png",
                                  height=480, width=640)
     render_frame.animate = 10
     render_frame.grid(row=0, column=0)
@@ -45,6 +45,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 ```
 - demo:
 <img src="images/demo.gif">

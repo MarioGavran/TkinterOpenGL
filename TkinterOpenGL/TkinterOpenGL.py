@@ -1,5 +1,5 @@
 from pyopengltk import OpenGLFrame
-from OpenGLobj import OpenGLobj as oGLobj
+from .OpenGLobj import OpenGLobj
 
 
 class TkinterOpenGL(OpenGLFrame):
@@ -32,7 +32,7 @@ class TkinterOpenGL(OpenGLFrame):
         self.bind('<Button-4>', self.MouseB4)
         self.bind('<Button-5>', self.MouseB5)
 
-        self.oglobj = oGLobj.OpenGLobj(*self.paths, width=self.width, height=self.height)
+        self.oglobj = OpenGLobj.OpenGLobj(*self.paths, width=self.width, height=self.height)
 
     def redraw(self):
         self.oglobj.render()

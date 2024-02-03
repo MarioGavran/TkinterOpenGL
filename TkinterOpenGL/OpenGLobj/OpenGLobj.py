@@ -4,7 +4,7 @@ from OpenGL.GL.shaders import compileProgram, compileShader
 import ctypes
 import pyrr
 from PIL import Image
-
+import os.path
 
 #########################################################################
 #########################################################################
@@ -85,8 +85,11 @@ class OpenGLobj:
             near=0.1, far=10, dtype=np.float32
         )
 
+        shaders_path = os.path.abspath(os.path.dirname(__file__))
+
         # set all picking Shader variables
-        self.pickingShader = self.create_shader("./OpenGLobj/shaders/picking_vertex.txt", "./OpenGLobj/shaders/picking_fragment.txt")
+        self.pickingShader = self.create_shader(shaders_path + "/shaders/picking_vertex.txt",
+                                                shaders_path + "/shaders/picking_fragment.txt")
         glUseProgram(self.pickingShader)
         self.codeVarLocation = glGetUniformLocation(self.pickingShader, "code")
         glBindFragDataLocation(self.pickingShader, 0, "outputF")
@@ -94,7 +97,8 @@ class OpenGLobj:
         self.pickingModelMatrixLocation = glGetUniformLocation(self.pickingShader, "model")
 
         # set all regular Shader variables
-        self.shader = self.create_shader("./OpenGLobj/shaders/vertex.txt", "./OpenGLobj/shaders/fragment.txt")
+        self.shader = self.create_shader(shaders_path + "/shaders/vertex.txt",
+                                         shaders_path + "/shaders/fragment.txt")
         glUseProgram(self.shader)
         glUniform1i(glGetUniformLocation(self.shader, "image.texture"), 0)
         glUniformMatrix4fv(glGetUniformLocation(self.shader, "projection"), 1, GL_FALSE, projection_transform)
